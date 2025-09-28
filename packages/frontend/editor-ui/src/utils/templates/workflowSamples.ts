@@ -9,6 +9,7 @@ import jokeAgentWithHttpToolJson from '@/utils/templates/samples/agents/joke_age
 import knowledgeStoreAgentWithGoogleDriveJson from '@/utils/templates/samples/agents/knowledge_store_agent_with_google_drive.json';
 import taskManagementAgentWithGoogleSheetsJson from '@/utils/templates/samples/agents/task_management_agent_with_google_sheets.json';
 import voiceAssistantAgentJson from '@/utils/templates/samples/agents/voice-agent.json';
+import wooCommerceProductCreatorAgentJson from '@/utils/templates/samples/agents/woocommerce_product_creator_agent.json';
 import calendarAgentJson from '@/utils/templates/samples/agents/calendar-agent.json';
 import buildYourFirstAiAgentJson from '@/utils/templates/samples/tutorial/build_your_first_ai_agent.json';
 import jsonBasicsJson from '@/utils/templates/samples/tutorial/json_basics.json';
@@ -45,6 +46,8 @@ export const PrebuiltAgentTemplates = {
 	TaskManagementAgent: getWorkflowJson(taskManagementAgentWithGoogleSheetsJson).meta.templateId,
 	JokeAgent: getWorkflowJson(jokeAgentWithHttpToolJson).meta.templateId,
 	VoiceAssistantAgent: getWorkflowJson(voiceAssistantAgentJson).meta.templateId,
+	WooCommerceProductCreatorAgent: getWorkflowJson(wooCommerceProductCreatorAgentJson).meta
+		.templateId,
 } as const;
 
 export const TutorialTemplates = {
@@ -139,6 +142,18 @@ export const getPrebuiltAgents = (): SampleTemplate[] => {
 				{
 					name: 'n8n-nodes-base.httpRequest',
 					version: 4.2,
+				},
+			],
+		},
+		{
+			name: 'WooCommerce product creator agent',
+			description:
+				'Conversational assistant that collects product requirements and publishes new items to WooCommerce.',
+			template: getWorkflowJson(wooCommerceProductCreatorAgentJson),
+			nodes: [
+				{
+					name: 'n8n-nodes-base.wooCommerce',
+					version: 1,
 				},
 			],
 		},
