@@ -1,0 +1,241 @@
+{
+	"name": "Social keyword commenter agent",
+	"meta": {
+		"templateCredsSetupCompleted": false,
+		"templateId": "social_keyword_comment_agent"
+	},
+	"nodes": [
+		{
+			"parameters": {
+				"options": {}
+			},
+			"id": "a4b0f9d2-8865-4e50-b6fb-7aa950ec83bb",
+			"name": "Chat message",
+			"type": "@n8n/n8n-nodes-langchain.chatTrigger",
+			"typeVersion": 1.3,
+			"position": [-640, -32],
+			"webhookId": "7265dfce-8d90-4f5d-8a5a-8bc768727f6e"
+		},
+		{
+			"parameters": {
+				"model": {
+					"__rl": true,
+					"mode": "id",
+					"value": "gpt-5-mini"
+				},
+				"options": {
+					"temperature": 0.2
+				}
+			},
+			"id": "9de9099f-3e74-4ded-a676-a1f17b7b7fde",
+			"name": "Model",
+			"type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+			"typeVersion": 1.2,
+			"position": [-512, 256],
+			"credentials": {}
+		},
+		{
+			"parameters": {
+				"contextWindowLength": 12
+			},
+			"type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+			"typeVersion": 1.3,
+			"position": [-352, 256],
+			"id": "8f9f4ed9-5754-4ac3-947a-0d57b1a9f6da",
+			"name": "Conversation Memory"
+		},
+		{
+			"parameters": {
+				"hostUrl": "graph.facebook.com",
+				"httpRequestMethod": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Facebook_Graph_Method', `HTTP method to use for the Facebook or Instagram Graph API call (GET to discover posts, POST to publish comments). Always reply in uppercase.`, 'string') }}",
+				"node": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Facebook_Target_Node', `Node identifier (page, post, media, or user) you want to operate on. Include the business account prefix when working with Instagram media.`, 'string') }}",
+				"edge": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Facebook_Target_Edge', `Edge to access relative to the node. Use the comments edge when posting, or discovery edges such as feed or tags when searching. Return an empty string when not required.`, 'string') }}",
+				"options": {
+					"queryParametersJson": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Facebook_Graph_Params', `JSON object of parameters to include in the Graph API request, such as {\"message\":\"...\",\"fields\":\"...\",\"limit\":25}.`, 'json') }}"
+				}
+			},
+			"id": "b2d1085f-4e56-47e9-8cf4-71c2dc4505f2",
+			"name": "Facebook & Instagram Graph API",
+			"type": "n8n-nodes-base.facebookGraphApi",
+			"typeVersion": 1,
+			"position": [224, -112],
+			"credentials": {}
+		},
+		{
+			"parameters": {
+				"method": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('LinkedIn_HTTP_Method', `HTTP method for the LinkedIn API request (GET to discover posts, POST to respond).`, 'string') }}",
+				"url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('LinkedIn_API_URL', `Full LinkedIn REST API URL to search or comment on matching content.`, 'string') }}",
+				"authentication": "none",
+				"sendHeaders": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('LinkedIn_Send_Headers', `Return true when the LinkedIn request requires custom headers such as Authorization.`, 'boolean') }}",
+				"specifyHeaders": "json",
+				"jsonHeaders": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('LinkedIn_Headers', `JSON object of HTTP headers required by the LinkedIn API call. Reference stored credentials or environment variables for secrets.`, 'json') }}",
+				"sendQuery": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('LinkedIn_Send_Query', `Return true when the request needs query string parameters (for example keyword searches).`, 'boolean') }}",
+				"specifyQuery": "json",
+				"jsonQuery": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('LinkedIn_Query_Params', `JSON object of query parameters to append to the LinkedIn request, such as {\"q\":\"keywords\"}.`, 'json') }}",
+				"sendBody": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('LinkedIn_Send_Body', `Return true when a JSON payload should be sent, false otherwise.`, 'boolean') }}",
+				"contentType": "json",
+				"specifyBody": "json",
+				"jsonBody": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('LinkedIn_JSON_Body', `JSON object payload for the LinkedIn API request (for example {\"object\":\"urn:li:activity:...\",\"message\":{...}}). Return {} when not needed.`, 'json') }}"
+			},
+			"id": "c3f63635-3a01-4cda-862e-488462f79ee2",
+			"name": "LinkedIn API request",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [224, 64],
+			"credentials": {}
+		},
+		{
+			"parameters": {
+				"method": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('TikTok_HTTP_Method', `HTTP method for the TikTok API call (GET to locate media, POST to publish comments).`, 'string') }}",
+				"url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('TikTok_API_URL', `Full TikTok for Business or TikTok Open API endpoint to search content or submit comments.`, 'string') }}",
+				"authentication": "none",
+				"sendHeaders": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('TikTok_Send_Headers', `Return true when headers such as Authorization must be provided.`, 'boolean') }}",
+				"specifyHeaders": "json",
+				"jsonHeaders": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('TikTok_Headers', `JSON object with the headers required by the TikTok API, for example Authorization tokens stored in credentials.`, 'json') }}",
+				"sendQuery": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('TikTok_Send_Query', `Return true when query parameters like keywords or pagination settings are required.`, 'boolean') }}",
+				"specifyQuery": "json",
+				"jsonQuery": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('TikTok_Query_Params', `JSON object of query parameters for the TikTok request, such as {\"keyword\":\"...\"}.`, 'json') }}",
+				"sendBody": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('TikTok_Send_Body', `Return true when the request should include a JSON body payload.`, 'boolean') }}",
+				"contentType": "json",
+				"specifyBody": "json",
+				"jsonBody": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('TikTok_JSON_Body', `JSON payload for the TikTok API request, for example {\"video_id\":\"...\",\"text\":\"...\"}. Return {} if no body is required.`, 'json') }}"
+			},
+			"id": "d2d1e7e8-e67c-4a74-9f0c-82aa8c7f0d3f",
+			"name": "TikTok API request",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [224, 208],
+			"credentials": {}
+		},
+		{
+			"parameters": {
+				"method": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('YouTube_HTTP_Method', `HTTP method for the YouTube Data API request (GET to find videos/comments, POST to create comments).`, 'string') }}",
+				"url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('YouTube_API_URL', `Full YouTube Data API endpoint for the task, for example https://www.googleapis.com/youtube/v3/commentThreads`, 'string') }}",
+				"authentication": "none",
+				"sendHeaders": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('YouTube_Send_Headers', `Return true when custom headers such as Authorization or X-Goog-Api-Key are required.`, 'boolean') }}",
+				"specifyHeaders": "json",
+				"jsonHeaders": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('YouTube_Headers', `JSON object of headers required by the YouTube API call.`, 'json') }}",
+				"sendQuery": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('YouTube_Send_Query', `Return true when the request should include query parameters like part, q, or videoId.`, 'boolean') }}",
+				"specifyQuery": "json",
+				"jsonQuery": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('YouTube_Query_Params', `JSON object of query parameters such as {\"part\":\"snippet\",\"q\":\"keyword\"}.`, 'json') }}",
+				"sendBody": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('YouTube_Send_Body', `Return true when the request requires a JSON payload.`, 'boolean') }}",
+				"contentType": "json",
+				"specifyBody": "json",
+				"jsonBody": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('YouTube_JSON_Body', `JSON payload for the YouTube Data API request, e.g. {\"part\":\"snippet\",\"snippet\":{\"videoId\":\"...\",\"topLevelComment\":{\"snippet\":{\"textOriginal\":\"...\"}}}}`, 'json') }}"
+			},
+			"id": "e34fdb6f-d3cb-4b6f-8a7f-15a99d705612",
+			"name": "YouTube API request",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [224, 352],
+			"credentials": {}
+		},
+		{
+			"parameters": {
+				"options": {
+					"systemMessage": "=You are a multilingual social media engagement strategist who automates comment outreach across Facebook, Instagram, LinkedIn, TikTok, and YouTube.\n\n## Responsibilities\n- Gather campaign goals, brand voice, regional or language guardrails, compliance requirements, review workflows, and the list of keywords or hashtags to monitor.\n- Identify which platforms should be targeted and confirm the authenticated accounts or business IDs available in the connected nodes.\n- Formulate a per-platform action plan that specifies how to discover matching posts (search endpoints, account feeds, or hashtag queries) and how to respond.\n- Use the provided tool nodes to retrieve candidate posts, review results with the user when necessary, and then craft high-quality, context-aware comments that comply with platform policies.\n- Always summarize the discovery results (including post links, authors, follower counts when available, and why the post matches the keyword strategy) before posting any comment.\n- Obtain explicit confirmation from the user for each platform before publishing comments.\n- When publishing, include platform-safe formatting, localized messaging, relevant emojis or hashtags, and ensure character limits are respected.\n- Log every published comment back to the user with links, comment IDs, and next-step recommendations.\n- If a platform requires configuration or credentials that are missing, surface a clear TODO list rather than guessing.\n- Never expose secret tokens directly—refer to stored credentials or environment variables configured on the node.\n- When filling tool parameters, return HTTP methods in uppercase (GET/POST/etc.) and send `true`/`false` booleans instead of strings.\n\nToday is {{ $now.format('yyyy-MM-dd') }}."
+				}
+			},
+			"id": "f2f47c51-9f66-4a6e-bfc9-2886fce59bb8",
+			"name": "Social commenter agent",
+			"type": "@n8n/n8n-nodes-langchain.agent",
+			"typeVersion": 2.2,
+			"position": [-384, -32]
+		},
+		{
+			"parameters": {
+				"content": "## Configure platform credentials\n- Facebook/Instagram: connect a Facebook Graph API credential to the \"Facebook & Instagram Graph API\" node.\n- LinkedIn: add the required LinkedIn Marketing Developer API token headers to the \"LinkedIn API request\" node.\n- TikTok: provide OAuth tokens and required headers for the \"TikTok API request\" node.\n- YouTube: attach a Google OAuth credential or API key headers to the \"YouTube API request\" node.\n\nYou can edit each node after import to select stored credentials or environment variable expressions."
+			},
+			"type": "n8n-nodes-base.stickyNote",
+			"position": [-928, -192],
+			"typeVersion": 1,
+			"id": "02b5a3f0-16f9-4faf-bb61-36ba16d79b78",
+			"name": "Setup guide"
+		}
+	],
+	"connections": {
+		"Chat message": {
+			"main": [
+				[
+					{
+						"node": "Social commenter agent",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Model": {
+			"ai_languageModel": [
+				[
+					{
+						"node": "Social commenter agent",
+						"type": "ai_languageModel",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Conversation Memory": {
+			"ai_memory": [
+				[
+					{
+						"node": "Social commenter agent",
+						"type": "ai_memory",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Facebook & Instagram Graph API": {
+			"ai_tool": [
+				[
+					{
+						"node": "Social commenter agent",
+						"type": "ai_tool",
+						"index": 0
+					}
+				]
+			]
+		},
+		"LinkedIn API request": {
+			"ai_tool": [
+				[
+					{
+						"node": "Social commenter agent",
+						"type": "ai_tool",
+						"index": 0
+					}
+				]
+			]
+		},
+		"TikTok API request": {
+			"ai_tool": [
+				[
+					{
+						"node": "Social commenter agent",
+						"type": "ai_tool",
+						"index": 0
+					}
+				]
+			]
+		},
+		"YouTube API request": {
+			"ai_tool": [
+				[
+					{
+						"node": "Social commenter agent",
+						"type": "ai_tool",
+						"index": 0
+					}
+				]
+			]
+		}
+	},
+	"pinData": {},
+	"active": false,
+	"settings": {
+		"executionOrder": "v1"
+	},
+	"tags": []
+}

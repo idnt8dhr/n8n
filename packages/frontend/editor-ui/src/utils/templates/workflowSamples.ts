@@ -9,6 +9,10 @@ import jokeAgentWithHttpToolJson from '@/utils/templates/samples/agents/joke_age
 import knowledgeStoreAgentWithGoogleDriveJson from '@/utils/templates/samples/agents/knowledge_store_agent_with_google_drive.json';
 import taskManagementAgentWithGoogleSheetsJson from '@/utils/templates/samples/agents/task_management_agent_with_google_sheets.json';
 import voiceAssistantAgentJson from '@/utils/templates/samples/agents/voice-agent.json';
+import wooCommerceProductCreatorAgentJson from '@/utils/templates/samples/agents/woocommerce_product_creator_agent.json';
+import wooCommerceProductImageGeneratorAgentJson from '@/utils/templates/samples/agents/woocommerce_product_image_generator_agent.json';
+import socialKeywordCommentAgentJson from '@/utils/templates/samples/agents/social_keyword_comment_agent.json';
+import marsAtmosphereMonitorAgentJson from '@/utils/templates/samples/agents/mars_atmosphere_monitor_agent.json';
 import calendarAgentJson from '@/utils/templates/samples/agents/calendar-agent.json';
 import buildYourFirstAiAgentJson from '@/utils/templates/samples/tutorial/build_your_first_ai_agent.json';
 import jsonBasicsJson from '@/utils/templates/samples/tutorial/json_basics.json';
@@ -45,6 +49,12 @@ export const PrebuiltAgentTemplates = {
 	TaskManagementAgent: getWorkflowJson(taskManagementAgentWithGoogleSheetsJson).meta.templateId,
 	JokeAgent: getWorkflowJson(jokeAgentWithHttpToolJson).meta.templateId,
 	VoiceAssistantAgent: getWorkflowJson(voiceAssistantAgentJson).meta.templateId,
+	WooCommerceProductCreatorAgent: getWorkflowJson(wooCommerceProductCreatorAgentJson).meta
+		.templateId,
+	WooCommerceProductImageGeneratorAgent: getWorkflowJson(wooCommerceProductImageGeneratorAgentJson)
+		.meta.templateId,
+	SocialKeywordCommentAgent: getWorkflowJson(socialKeywordCommentAgentJson).meta.templateId,
+	MarsAtmosphereMonitorAgent: getWorkflowJson(marsAtmosphereMonitorAgentJson).meta.templateId,
 } as const;
 
 export const TutorialTemplates = {
@@ -135,6 +145,62 @@ export const getPrebuiltAgents = (): SampleTemplate[] => {
 			name: 'Joke agent',
 			description: 'Uses the Joke API via the HTTP tool to deliver fun, personalized jokes.',
 			template: getWorkflowJson(jokeAgentWithHttpToolJson),
+			nodes: [
+				{
+					name: 'n8n-nodes-base.httpRequest',
+					version: 4.2,
+				},
+			],
+		},
+		{
+			name: 'WooCommerce product creator agent',
+			description:
+				'Conversational assistant that collects product requirements and publishes new items to WooCommerce.',
+			template: getWorkflowJson(wooCommerceProductCreatorAgentJson),
+			nodes: [
+				{
+					name: 'n8n-nodes-base.wooCommerce',
+					version: 1,
+				},
+			],
+		},
+		{
+			name: 'WooCommerce product image generator agent',
+			description:
+				'Creates polished WooCommerce listings with AI-generated product photography tailored to your brief.',
+			template: getWorkflowJson(wooCommerceProductImageGeneratorAgentJson),
+			nodes: [
+				{
+					name: '@n8n/n8n-nodes-langchain.openAi',
+					version: 1.8,
+				},
+				{
+					name: 'n8n-nodes-base.wooCommerce',
+					version: 1,
+				},
+			],
+		},
+		{
+			name: 'Social keyword commenter agent',
+			description:
+				'Monitors keyword-aligned conversations across major social platforms and posts approved comments on behalf of your brand.',
+			template: getWorkflowJson(socialKeywordCommentAgentJson),
+			nodes: [
+				{
+					name: 'n8n-nodes-base.facebookGraphApi',
+					version: 1,
+				},
+				{
+					name: 'n8n-nodes-base.httpRequest',
+					version: 4.2,
+				},
+			],
+		},
+		{
+			name: 'Mars atmosphere monitor agent',
+			description:
+				'Analyzes Mars atmospheric telemetry alongside Earth space-weather indicators to highlight potential cross-planet impacts.',
+			template: getWorkflowJson(marsAtmosphereMonitorAgentJson),
 			nodes: [
 				{
 					name: 'n8n-nodes-base.httpRequest',
