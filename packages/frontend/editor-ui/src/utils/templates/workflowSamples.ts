@@ -11,6 +11,7 @@ import taskManagementAgentWithGoogleSheetsJson from '@/utils/templates/samples/a
 import voiceAssistantAgentJson from '@/utils/templates/samples/agents/voice-agent.json';
 import wooCommerceProductCreatorAgentJson from '@/utils/templates/samples/agents/woocommerce_product_creator_agent.json';
 import socialKeywordCommentAgentJson from '@/utils/templates/samples/agents/social_keyword_comment_agent.json';
+import marsAtmosphereMonitorAgentJson from '@/utils/templates/samples/agents/mars_atmosphere_monitor_agent.json';
 import calendarAgentJson from '@/utils/templates/samples/agents/calendar-agent.json';
 import buildYourFirstAiAgentJson from '@/utils/templates/samples/tutorial/build_your_first_ai_agent.json';
 import jsonBasicsJson from '@/utils/templates/samples/tutorial/json_basics.json';
@@ -50,6 +51,7 @@ export const PrebuiltAgentTemplates = {
 	WooCommerceProductCreatorAgent: getWorkflowJson(wooCommerceProductCreatorAgentJson).meta
 		.templateId,
 	SocialKeywordCommentAgent: getWorkflowJson(socialKeywordCommentAgentJson).meta.templateId,
+	MarsAtmosphereMonitorAgent: getWorkflowJson(marsAtmosphereMonitorAgentJson).meta.templateId,
 } as const;
 
 export const TutorialTemplates = {
@@ -169,6 +171,18 @@ export const getPrebuiltAgents = (): SampleTemplate[] => {
 					name: 'n8n-nodes-base.facebookGraphApi',
 					version: 1,
 				},
+				{
+					name: 'n8n-nodes-base.httpRequest',
+					version: 4.2,
+				},
+			],
+		},
+		{
+			name: 'Mars atmosphere monitor agent',
+			description:
+				'Analyzes Mars atmospheric telemetry alongside Earth space-weather indicators to highlight potential cross-planet impacts.',
+			template: getWorkflowJson(marsAtmosphereMonitorAgentJson),
+			nodes: [
 				{
 					name: 'n8n-nodes-base.httpRequest',
 					version: 4.2,

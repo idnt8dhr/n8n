@@ -1,0 +1,171 @@
+{
+	"name": "Mars atmosphere monitor agent",
+	"meta": {
+		"templateCredsSetupCompleted": false,
+		"templateId": "mars_atmosphere_monitor_agent"
+	},
+	"nodes": [
+		{
+			"parameters": {
+				"options": {}
+			},
+			"id": "cf40a204-6c6f-43ec-87d3-c21e4f023ddc",
+			"name": "Chat message",
+			"type": "@n8n/n8n-nodes-langchain.chatTrigger",
+			"typeVersion": 1.3,
+			"position": [-640, -32],
+			"webhookId": "0d7e6348-4f74-4523-9a7a-8a49e83a0e9c"
+		},
+		{
+			"parameters": {
+				"model": {
+					"__rl": true,
+					"mode": "id",
+					"value": "gpt-5-mini"
+				},
+				"options": {
+					"temperature": 0.1
+				}
+			},
+			"id": "6c17c5a0-48bd-4b8a-8889-522fc72785f1",
+			"name": "Model",
+			"type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+			"typeVersion": 1.2,
+			"position": [-480, 224],
+			"credentials": {}
+		},
+		{
+			"parameters": {
+				"contextWindowLength": 10
+			},
+			"type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+			"typeVersion": 1.3,
+			"position": [-320, 224],
+			"id": "6d2d6e04-94fa-4f74-8db4-327a33c04a65",
+			"name": "Context Memory"
+		},
+		{
+			"parameters": {
+				"method": "GET",
+				"url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Mars_Atmosphere_API_URL', `Full API endpoint to retrieve the latest Mars atmospheric observations (for example NASA InSight, MRO/MAVEN datasets, or public aggregators like MAAS). Include required query parameters such as sol, feedtype, and ver where applicable.`, 'string') }}",
+				"authentication": "none",
+				"sendHeaders": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Mars_API_Send_Headers', `Return true when the Mars data source needs HTTP headers (for example api-key or Accept).`, 'boolean') }}",
+				"specifyHeaders": "json",
+				"jsonHeaders": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Mars_API_Headers', `JSON object of headers required by the Mars atmospheric request. Reference stored credentials or environment variables for secrets.`, 'json') }}",
+				"sendQuery": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Mars_API_Send_Query', `Return true when the Mars atmospheric request should include query string parameters.`, 'boolean') }}",
+				"specifyQuery": "json",
+				"jsonQuery": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Mars_API_Query', `JSON object of query parameters for the Mars atmospheric API call, such as {\"api_key\":\"{{$credentials.nasaApi.apiKey}}\",\"feedtype\":\"json\",\"ver\":\"1.0\"}.`, 'json') }}"
+			},
+			"id": "c8f1600f-f5f7-4f6d-8e4e-7d7c5b5e43c8",
+			"name": "Fetch Mars atmosphere data",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [224, -96],
+			"credentials": {}
+		},
+		{
+			"parameters": {
+				"method": "GET",
+				"url": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Earth_Impact_API_URL', `API endpoint to analyze downstream Earth impacts, such as NASA's Earth Observatory/EONET events, NOAA space weather feeds, or atmospheric teleconnection datasets. Provide the full URL with appropriate path segments.`, 'string') }}",
+				"authentication": "none",
+				"sendHeaders": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Earth_API_Send_Headers', `Return true when the Earth impact service requires custom headers.`, 'boolean') }}",
+				"specifyHeaders": "json",
+				"jsonHeaders": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Earth_API_Headers', `JSON object of headers to include when querying Earth impact services.`, 'json') }}",
+				"sendQuery": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Earth_API_Send_Query', `Return true if query string parameters are needed for the Earth impact request.`, 'boolean') }}",
+				"specifyQuery": "json",
+				"jsonQuery": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Earth_API_Query', `JSON object of query parameters for Earth impact analysis APIs, such as {\"status\":\"open\",\"limit\":50}.`, 'json') }}"
+			},
+			"id": "b583b2d9-d684-4fd5-8b6a-561a6a2851fe",
+			"name": "Fetch Earth impact signals",
+			"type": "n8n-nodes-base.httpRequest",
+			"typeVersion": 4.2,
+			"position": [224, 80],
+			"credentials": {}
+		},
+		{
+			"parameters": {
+				"options": {
+					"systemMessage": "=You are a planetary atmosphere analyst focused on monitoring Mars and anticipating cross-planetary effects on Earth.\n\n## Responsibilities\n- Interview the user to learn their mission objectives, alerting cadence, preferred data sources, and thresholds of concern.\n- Select the most reliable Mars atmospheric feeds (NASA InSight/MRO/MAVEN, MAAS, ExoMars, etc.) and fetch the latest telemetry via the \"Fetch Mars atmosphere data\" tool.\n- Gather complementary Earth-space weather or atmospheric datasets (NASA EONET, NOAA SWPC, ESA monitors) through the \"Fetch Earth impact signals\" tool to evaluate downstream impacts (auroras, radiation exposure, teleconnection patterns).\n- Fuse the datasets into a clear situational report highlighting trends, anomalies, and correlations that could influence Earth conditions.\n- Recommend mitigation or observation actions and configure follow-up schedules or alert rules as requested.\n- Always surface data provenance, timestamps, units, and confidence notes in summaries.\n- When API credentials or configuration are missing, provide a precise TODO list instead of guessing.\n- Return true booleans and uppercase HTTP methods when filling tool parameters.\n\nToday is {{ $now.format('yyyy-MM-dd') }}."
+				}
+			},
+			"id": "19f1e529-7f54-4021-9c6c-72057275d585",
+			"name": "Mars atmosphere agent",
+			"type": "@n8n/n8n-nodes-langchain.agent",
+			"typeVersion": 2.2,
+			"position": [-384, -32]
+		},
+		{
+			"parameters": {
+				"content": "## Connect science data sources\n- Create NASA or relevant space-agency API credentials and attach them to the HTTP Request nodes as needed.\n- Adjust the query parameter expressions to target your preferred datasets (sol ranges, event types, geolocations).\n- Optionally add alerting nodes (email, Slack, etc.) to act on the agent's summaries."
+			},
+			"type": "n8n-nodes-base.stickyNote",
+			"position": [-912, -208],
+			"typeVersion": 1,
+			"id": "5f145e6e-8538-4a01-9e6f-89b11fcd41ad",
+			"name": "Setup guide"
+		}
+	],
+	"connections": {
+		"Chat message": {
+			"main": [
+				[
+					{
+						"node": "Mars atmosphere agent",
+						"type": "main",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Model": {
+			"ai_languageModel": [
+				[
+					{
+						"node": "Mars atmosphere agent",
+						"type": "ai_languageModel",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Context Memory": {
+			"ai_memory": [
+				[
+					{
+						"node": "Mars atmosphere agent",
+						"type": "ai_memory",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Fetch Mars atmosphere data": {
+			"ai_tool": [
+				[
+					{
+						"node": "Mars atmosphere agent",
+						"type": "ai_tool",
+						"index": 0
+					}
+				]
+			]
+		},
+		"Fetch Earth impact signals": {
+			"ai_tool": [
+				[
+					{
+						"node": "Mars atmosphere agent",
+						"type": "ai_tool",
+						"index": 1
+					}
+				]
+			]
+		}
+	},
+	"pinData": {},
+	"active": false,
+	"settings": {
+		"executionOrder": "v1"
+	},
+	"tags": []
+}
