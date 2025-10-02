@@ -10,6 +10,7 @@ import knowledgeStoreAgentWithGoogleDriveJson from '@/utils/templates/samples/ag
 import taskManagementAgentWithGoogleSheetsJson from '@/utils/templates/samples/agents/task_management_agent_with_google_sheets.json';
 import voiceAssistantAgentJson from '@/utils/templates/samples/agents/voice-agent.json';
 import wooCommerceProductCreatorAgentJson from '@/utils/templates/samples/agents/woocommerce_product_creator_agent.json';
+import wooCommerceProductImageGeneratorAgentJson from '@/utils/templates/samples/agents/woocommerce_product_image_generator_agent.json';
 import socialKeywordCommentAgentJson from '@/utils/templates/samples/agents/social_keyword_comment_agent.json';
 import marsAtmosphereMonitorAgentJson from '@/utils/templates/samples/agents/mars_atmosphere_monitor_agent.json';
 import calendarAgentJson from '@/utils/templates/samples/agents/calendar-agent.json';
@@ -50,6 +51,8 @@ export const PrebuiltAgentTemplates = {
 	VoiceAssistantAgent: getWorkflowJson(voiceAssistantAgentJson).meta.templateId,
 	WooCommerceProductCreatorAgent: getWorkflowJson(wooCommerceProductCreatorAgentJson).meta
 		.templateId,
+	WooCommerceProductImageGeneratorAgent: getWorkflowJson(wooCommerceProductImageGeneratorAgentJson)
+		.meta.templateId,
 	SocialKeywordCommentAgent: getWorkflowJson(socialKeywordCommentAgentJson).meta.templateId,
 	MarsAtmosphereMonitorAgent: getWorkflowJson(marsAtmosphereMonitorAgentJson).meta.templateId,
 } as const;
@@ -155,6 +158,22 @@ export const getPrebuiltAgents = (): SampleTemplate[] => {
 				'Conversational assistant that collects product requirements and publishes new items to WooCommerce.',
 			template: getWorkflowJson(wooCommerceProductCreatorAgentJson),
 			nodes: [
+				{
+					name: 'n8n-nodes-base.wooCommerce',
+					version: 1,
+				},
+			],
+		},
+		{
+			name: 'WooCommerce product image generator agent',
+			description:
+				'Creates polished WooCommerce listings with AI-generated product photography tailored to your brief.',
+			template: getWorkflowJson(wooCommerceProductImageGeneratorAgentJson),
+			nodes: [
+				{
+					name: '@n8n/n8n-nodes-langchain.openAi',
+					version: 1.8,
+				},
 				{
 					name: 'n8n-nodes-base.wooCommerce',
 					version: 1,
